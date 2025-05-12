@@ -48,7 +48,7 @@ var app = builder.Build();
 
 app.UseCors("AllowAll");
 
-var res = app.MapGroup("/api").MapExamGroup();
+var res = app.MapGroup("/api/quizzes").MapExamGroup();
 
 
 app.Run();

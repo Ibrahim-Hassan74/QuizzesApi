@@ -129,3 +129,4 @@ E:\aspnetcore\code\ExamApi\ExamApi\obj\Release\net8.0\win-x86\refint\ExamApi.dll
 E:\aspnetcore\code\ExamApi\ExamApi\obj\Release\net8.0\win-x86\ExamApi.pdb
 E:\aspnetcore\code\ExamApi\ExamApi\obj\Release\net8.0\win-x86\ExamApi.genruntimeconfig.cache
 E:\aspnetcore\code\ExamApi\ExamApi\obj\Release\net8.0\win-x86\ref\ExamApi.dll
+E:\aspnetcore\code\ExamApi\ExamApi\obj\Release\net8.0\win-x86\ExamApi.sourcelink.json

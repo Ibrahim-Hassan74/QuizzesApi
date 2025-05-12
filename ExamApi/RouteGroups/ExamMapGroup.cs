@@ -11,7 +11,7 @@ namespace ExamApi.RouteGroups
     {
         public static RouteGroupBuilder MapExamGroup(this RouteGroupBuilder group)
         {
-            group.MapGet("/quizzes", async (ApplicationDbContext db) =>
+            group.MapGet("", async (ApplicationDbContext db) =>
             {
                 var quizzes = await db.Quizzes
                     .Include(q => q.Questions)
@@ -34,7 +34,7 @@ namespace ExamApi.RouteGroups
                 return Results.Ok(quizzes);
             });
 
-            group.MapPost("/quizzes", async (QuizDTO quizDto, ApplicationDbContext db) =>
+            group.MapPost("", async (QuizDTO quizDto, ApplicationDbContext db) =>
             {
                 var quiz = new Quiz
                 {
@@ -80,8 +80,48 @@ namespace ExamApi.RouteGroups
                 return result;
             });
 
+            group.MapDelete("/{Id:guid}", async (Guid Id, ApplicationDbContext db) =>
+            {
+                var quiz = await db.Quizzes.FirstOrDefaultAsync(q => q.Id == Id);
+                if (quiz == null)
+                {
+                    return Results.NotFound(new { error = "Quiz not found" });
+                }
+                db.Quizzes.Remove(quiz);
+                await db.SaveChangesAsync();
+                return Results.Ok();
+            });
+
+            group.MapPut("/{Id:guid}", async (Guid Id, QuizDTO quizDto, ApplicationDbContext db) =>
+            {
+                var quiz = await db.Quizzes.Include(q => q.Questions).ThenInclude(q => q.Options).FirstOrDefaultAsync(q => q.Id == Id);
+                if (quiz == null)
+                {
+                    return Results.NotFound(new { error = "Quiz not found" });
+                }
+                quiz.Title = quizDto.Title;
+                quiz.SubTitle = quizDto.SubTitle;
+                quiz.Time = int.TryParse(quizDto.Time, out var parsedTime) ? parsedTime : 0;
+                foreach (var question in quiz.Questions)
+                {
+                    var updatedQuestion = quizDto.Question.FirstOrDefault(q => q.Question == question.Text);
+                    if (updatedQuestion != null)
+                    {
+                        question.Text = updatedQuestion.Question;
+                        question.Options.Clear();
+                        question.Options.AddRange(updatedQuestion.Options.Select(opt => new Option
+                        {
+                            Text = opt,
+                            IsCorrect = opt == updatedQuestion.CorrectOption
+                        }));
+                    }
+                }
+                await db.SaveChangesAsync();
+                return Results.Ok();
+            });
 
             return group;
         }
+
     }
 }

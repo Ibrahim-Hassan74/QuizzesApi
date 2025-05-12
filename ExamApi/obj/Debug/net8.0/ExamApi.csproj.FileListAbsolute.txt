@@ -140,3 +140,4 @@ E:\aspnetcore\code\ExamApi\ExamApi\obj\Debug\net8.0\ExamApi.pdb
 E:\aspnetcore\code\ExamApi\ExamApi\obj\Debug\net8.0\ExamApi.genruntimeconfig.cache
 E:\aspnetcore\code\ExamApi\ExamApi\obj\Debug\net8.0\ref\ExamApi.dll
 E:\aspnetcore\code\ExamApi\ExamApi\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\aspnetcore\code\ExamApi\ExamApi\obj\Debug\net8.0\ExamApi.sourcelink.json

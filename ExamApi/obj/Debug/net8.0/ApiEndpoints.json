@@ -2,7 +2,7 @@
   {
     "ContainingType": "ExamApi.RouteGroups.ExamMapGroup\u002B\u003C\u003Ec",
     "Method": "\u003CMapExamGroup\u003Eb__0_0",
-    "RelativePath": "api/quizzes",
+    "RelativePath": "api/quizzes/",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
@@ -18,11 +18,60 @@
   {
     "ContainingType": "ExamApi.RouteGroups.ExamMapGroup\u002B\u003C\u003Ec",
     "Method": "\u003CMapExamGroup\u003Eb__0_1",
-    "RelativePath": "api/quizzes",
+    "RelativePath": "api/quizzes/",
     "HttpMethod": "POST",
     "IsController": false,
     "Order": 0,
     "Parameters": [
+      {
+        "Name": "quizDto",
+        "Type": "ExamApi.DTO.QuizDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ExamApi.RouteGroups.ExamMapGroup\u002B\u003C\u003Ec",
+    "Method": "\u003CMapExamGroup\u003Eb__0_3",
+    "RelativePath": "api/quizzes/{Id:guid}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ExamApi.RouteGroups.ExamMapGroup\u002B\u003C\u003Ec",
+    "Method": "\u003CMapExamGroup\u003Eb__0_4",
+    "RelativePath": "api/quizzes/{Id:guid}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
       {
         "Name": "quizDto",
         "Type": "ExamApi.DTO.QuizDTO",
