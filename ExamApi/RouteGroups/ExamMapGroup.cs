@@ -4,6 +4,7 @@ using ExamApi.ApplicationDbContextNamespace;
 using ExamApi.DTO;
 using ExamApi.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ExamApi.RouteGroups
 {
@@ -60,14 +61,14 @@ namespace ExamApi.RouteGroups
                 return Results.Ok();
             }).AddEndpointFilter(async (context, next) =>
             {
-                QuizDTO? product = context.Arguments.OfType<QuizDTO>().FirstOrDefault();
+                QuizDTO? quiz = context.Arguments.OfType<QuizDTO>().FirstOrDefault();
 
-                if (product == null)
-                    return Results.BadRequest(new { error = "Product details has not found" });
+                if (quiz == null)
+                    return Results.BadRequest(new { error = "quiz details has not found" });
 
-                var validationContext = new ValidationContext(product);
+                var validationContext = new ValidationContext(quiz);
                 List<ValidationResult> validationResults = new List<ValidationResult>();
-                bool isValid = Validator.TryValidateObject(product, validationContext, validationResults, true);
+                bool isValid = Validator.TryValidateObject(quiz, validationContext, validationResults, true);
 
                 if (!isValid)
                 {
@@ -94,7 +95,7 @@ namespace ExamApi.RouteGroups
 
             group.MapPut("/{Id:guid}", async (Guid Id, QuizDTO quizDto, ApplicationDbContext db) =>
             {
-                var quiz = await db.Quizzes.Include(q => q.Questions).ThenInclude(q => q.Options).FirstOrDefaultAsync(q => q.Id == Id);
+                var quiz = await db.Quizzes.FirstOrDefaultAsync(q => q.Id == Id);
                 if (quiz == null)
                 {
                     return Results.NotFound(new { error = "Quiz not found" });
@@ -102,22 +103,23 @@ namespace ExamApi.RouteGroups
                 quiz.Title = quizDto.Title;
                 quiz.SubTitle = quizDto.SubTitle;
                 quiz.Time = int.TryParse(quizDto.Time, out var parsedTime) ? parsedTime : 0;
-                foreach (var question in quiz.Questions)
-                {
-                    var updatedQuestion = quizDto.Question.FirstOrDefault(q => q.Question == question.Text);
-                    if (updatedQuestion != null)
-                    {
-                        question.Text = updatedQuestion.Question;
-                        question.Options.Clear();
-                        question.Options.AddRange(updatedQuestion.Options.Select(opt => new Option
-                        {
-                            Text = opt,
-                            IsCorrect = opt == updatedQuestion.CorrectOption
-                        }));
-                    }
-                }
                 await db.SaveChangesAsync();
                 return Results.Ok();
+            }).AddEndpointFilter(async (context, next) =>
+            {
+                QuizDTO? quiz = context.Arguments.OfType<QuizDTO>().FirstOrDefault();
+
+                if (quiz == null)
+                    return Results.BadRequest(new { error = "quiz details has not found" });
+
+                if(string.IsNullOrEmpty(quiz.SubTitle) || string.IsNullOrEmpty(quiz.Title) || !int.TryParse(quiz.Time, out var res))
+                {
+                    return Results.BadRequest(new { error = "quiz details has not found" });
+                }
+
+                var result = await next(context);
+
+                return result;
             });
 
             return group;
